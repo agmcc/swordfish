@@ -1,0 +1,11 @@
+language: java
+
+deploy:
+  provider: releases
+  api_key:
+    secure: IZo09wa++Y/dsvavtftYBuUQrDy2crHc8zdj8oXx1b6ykKp/CsRr0QdF9vS8WxIECaUxgQ6W2lRAHM+tWeXpTcGdmZgCeuidiMq5SqViRrO9gyaQrw2MWC5IjsPIjAFu10B5e4brxjGsLtQUIQWDSZJNkp3pd+IKYSbMcKANKgW5j/GW4CDfgk3kvIFAJk/uk50G/GKiQXoNYwX/m9HcWMDvI/3RA7BEZy7l6Wv4pwlnMTgI76SJwMlsgsFWZGzsPtKyZFBj+aL1S0RQbPE8fah4sHd3XnH4qfpP34ZCFKnHcJ5GSdKiqN2Z5Ni5N8IjdVplcFL3mPVIEb0rwHs0FQU1xwd24Nq7qyPFw/DmlaDSPWg2iH2ExKEo6Y+gq1PjpEQlacS1+ppOoBjihLReZsUZClnemcxuI2qIm6U6rXUol2qmEykk+zKpDabG0QSoKbFYS3pv3lG15akxrCz6HtGcrm7vWE+6ccIAPsXeD8yHoViYRQNyUAYIfq7JQB/QzJTRWLn3xSpaiCDUl1bBP9YHSdxhO+BPeli1+2KE4POouaXQkjygJ2yDLmqkzI/G6z4FN4SaVrIJ0Peh1JdtT3Z7zePhywQxU61ils6RsEju1032Mmi9Q5jsB3NA76cGAYeEtRBtkM2P9l7gJEFH7RJDR6yq9Te5mWjlWwCozsM=
+  file_glob: true
+  file: "./build/libs/swordfish-*.jar"
+  skip_cleanup: true
+  on:
+    tags: true

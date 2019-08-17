@@ -1,4 +1,4 @@
-# Swordfish
+# Swordfish [![Build Status](https://travis-ci.org/agmcc/swordfish.svg?branch=master)](https://travis-ci.org/agmcc/swordfish)
 
 A compile-time dependency injection framework for Java, using JSR-330 annotations.
 
