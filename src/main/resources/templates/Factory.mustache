@@ -1,0 +1,13 @@
+package {{packageName}};
+
+import javax.annotation.processing.Generated;
+
+@Generated("{{processor}}")
+public final class {{type}}Factory {
+
+  private static final {{type}} instance = {{creator}};
+
+  public static {{type}} getInstance() {
+    return instance;
+  }
+}

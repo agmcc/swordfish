@@ -1,0 +1,52 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'com.github.sherter.google-java-format' version '0.8'
+}
+
+group 'com.github.agmcc'
+version '0.1.0'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    /* PRODUCTION */
+    api 'javax.inject:javax.inject:1'
+
+    implementation 'com.github.spullara.mustache.java:compiler:0.9.6'
+
+    /* TEST */
+    testImplementation 'com.google.truth:truth:0.30'
+    testImplementation 'com.google.testing.compile:compile-testing:0.18'
+}
+
+tasks.withType(Test) {
+    testLogging {
+        events 'failed', 'standard_error'
+        exceptionFormat = 'full'
+    }
+}
+
+googleJavaFormat {
+    toolVersion = '1.7'
+}
+
+task format {
+    dependsOn ':googleJavaFormat'
+    group 'build'
+    description 'Google Java Format'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = 'swordfish'
+        }
+    }
+}
