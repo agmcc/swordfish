@@ -18,7 +18,7 @@ dependencies {
     /* PRODUCTION */
     api 'javax.inject:javax.inject:1'
 
-    implementation 'com.github.spullara.mustache.java:compiler:0.9.6'
+    implementation 'com.squareup:javapoet:1.11.1'
 
     /* TEST */
     testImplementation 'com.google.truth:truth:0.30'

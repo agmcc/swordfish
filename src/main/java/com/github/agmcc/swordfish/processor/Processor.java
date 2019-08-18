@@ -1,9 +1,12 @@
 package com.github.agmcc.swordfish.processor;
 
 import com.github.agmcc.swordfish.processor.Processor.Bean.BeanType;
-import com.github.mustachejava.DefaultMustacheFactory;
-import com.github.mustachejava.Mustache;
-import com.github.mustachejava.MustacheFactory;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Generated;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -107,9 +111,6 @@ public class Processor extends AbstractProcessor {
     }
 
     // Generate factories
-    final MustacheFactory mustacheFactory = new DefaultMustacheFactory();
-    final Mustache template = mustacheFactory.compile("templates/Factory.mustache");
-
     for (final Bean bean : beans) {
       // Create template model
       final Name type = typeUtils.asElement(bean.getType()).getSimpleName();
@@ -173,13 +174,39 @@ public class Processor extends AbstractProcessor {
                 provider.getEnclosingElement(), provider.getSimpleName(), args);
       }
 
-      final Factory factory = new Factory(type, packageName, creator);
+      final FieldSpec instance =
+          FieldSpec.builder(TypeName.get(bean.getType()), "instance")
+              .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+              .initializer(creator)
+              .build();
+
+      final MethodSpec getInstance =
+          MethodSpec.methodBuilder("getInstance")
+              .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+              .returns(TypeName.get(bean.getType()))
+              .addStatement("return instance")
+              .build();
+
+      final AnnotationSpec generated =
+          AnnotationSpec.builder(Generated.class)
+              .addMember("value", "$S", Processor.class.getCanonicalName())
+              .build();
+
+      final TypeSpec factory =
+          TypeSpec.classBuilder(type.toString().concat("Factory"))
+              .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+              .addAnnotation(generated)
+              .addField(instance)
+              .addMethod(getInstance)
+              .build();
+
+      final JavaFile javaFile = JavaFile.builder(packageName.toString(), factory).build();
 
       // Execute template and write file
       try {
         final JavaFileObject jfo = filer.createSourceFile(bean.toString().concat("Factory"));
         try (final Writer writer = jfo.openWriter()) {
-          template.execute(writer, factory);
+          javaFile.writeTo(writer);
         }
       } catch (final IOException e) {
         e.printStackTrace();
