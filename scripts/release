@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]; then
+  echo "Usage: release <TAG>"
+  exit 1
+fi
+
+VERSION=$1
+README=./README.md
+ARTIFACT='(com\.github\.agmcc:swordfish:)[0-9]+\.[0-9]+\.[0-9]+'
+REPLACE="\1$VERSION"
+
+echo "Setting $README version to $VERSION"
+sed -i -E "s/$ARTIFACT/$REPLACE/g" $README
+
+git add $README
+git commit -m "Release $VERSION"
+git tag -s "$VERSION" -m "Release version $VERSION"
