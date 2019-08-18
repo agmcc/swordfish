@@ -1,7 +1,6 @@
 package com.github.agmcc.swordfish.processor;
 
 import com.github.agmcc.swordfish.processor.Processor.Bean.BeanType;
-import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.Generated;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -187,15 +185,9 @@ public class Processor extends AbstractProcessor {
               .addStatement("return instance")
               .build();
 
-      final AnnotationSpec generated =
-          AnnotationSpec.builder(Generated.class)
-              .addMember("value", "$S", Processor.class.getCanonicalName())
-              .build();
-
       final TypeSpec factory =
           TypeSpec.classBuilder(type.toString().concat("Factory"))
               .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-              .addAnnotation(generated)
               .addField(instance)
               .addMethod(getInstance)
               .build();

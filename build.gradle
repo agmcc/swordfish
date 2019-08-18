@@ -1,3 +1,5 @@
+import org.gradle.internal.jvm.Jvm
+
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -23,6 +25,11 @@ dependencies {
     /* TEST */
     testImplementation 'com.google.truth:truth:0.30'
     testImplementation 'com.google.testing.compile:compile-testing:0.18'
+
+    // Needed for JDK 8
+    if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+        testImplementation files(Jvm.current().getToolsJar())
+    }
 }
 
 tasks.withType(Test) {

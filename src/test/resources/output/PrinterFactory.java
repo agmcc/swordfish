@@ -1,8 +1,5 @@
 package swordfish;
 
-import javax.annotation.processing.Generated;
-
-@Generated("com.github.agmcc.swordfish.processor.Processor")
 public final class PrinterFactory {
 
   private static final Printer instance =
