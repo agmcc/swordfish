@@ -6,12 +6,13 @@ import com.google.testing.compile.JavaSourcesSubjectFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
 import org.junit.Test;
 
-public class ProcessorTest {
+public class SwordfishProcessorTest {
 
-  private static final javax.annotation.processing.Processor PROCESSOR = new Processor();
+  private static final Processor PROCESSOR = new SwordfishProcessor();
 
   @Test
   public void testFactoriesGenerated() {
