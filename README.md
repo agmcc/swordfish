@@ -1,6 +1,6 @@
 # Swordfish
 
-[![Build Status](https://travis-ci.org/agmcc/swordfish.svg?branch=master)](https://travis-ci.org/agmcc/swordfish) ![GitHub release](https://img.shields.io/github/release/agmcc/swordfish)
+[![Build Status](https://travis-ci.org/agmcc/swordfish.svg?branch=master)](https://travis-ci.org/agmcc/swordfish) ![GitHub release](https://img.shields.io/github/release/agmcc/swordfish) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=agmcc_swordfish&metric=alert_status)](https://sonarcloud.io/dashboard?id=agmcc_swordfish)
 
 A compile-time dependency injection framework for Java, using JSR-330 annotations.
 
