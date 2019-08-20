@@ -4,6 +4,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'com.github.sherter.google-java-format' version '0.8'
+    id 'jacoco'
 }
 
 group 'com.github.agmcc'
@@ -56,5 +57,13 @@ publishing {
             from components.java
             artifactId = 'swordfish'
         }
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        html.enabled false
     }
 }
