@@ -23,6 +23,7 @@ dependencies {
     api 'javax.inject:javax.inject:1'
 
     implementation 'com.squareup:javapoet:1.11.1'
+    implementation 'com.google.guava:guava:28.0-jre'
 
     /* TEST */
     testImplementation 'com.google.truth:truth:0.30'

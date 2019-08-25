@@ -1,6 +1,6 @@
 package com.github.agmcc.swordfish.domain;
 
-public enum BeanType {
+public enum BeanDefinitionType {
   CLASS,
-  PROVIDED
+  METHOD
 }
