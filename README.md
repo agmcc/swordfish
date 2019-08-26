@@ -22,8 +22,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.agmcc:swordfish:0.1.0'
-    annotationProcessor 'com.github.agmcc:swordfish:0.1.0'
+    implementation 'com.github.agmcc:swordfish:0.2.0'
+    annotationProcessor 'com.github.agmcc:swordfish:0.2.0'
 }
 ```
 
