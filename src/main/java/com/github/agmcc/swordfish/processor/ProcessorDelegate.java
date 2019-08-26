@@ -1,11 +1,9 @@
 package com.github.agmcc.swordfish.processor;
 
 import com.github.agmcc.swordfish.bean.BeanLoader;
-import com.github.agmcc.swordfish.domain.BeanElement;
-import com.github.agmcc.swordfish.domain.Dependency;
+import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.factory.FactoryBuilder;
 import com.github.agmcc.swordfish.io.JavaFileWriter;
-import com.google.common.graph.ValueGraph;
 import com.squareup.javapoet.JavaFile;
 import java.util.Set;
 import javax.annotation.processing.RoundEnvironment;
@@ -23,6 +21,7 @@ class ProcessorDelegate {
       final BeanLoader beanLoader,
       final JavaFileWriter javaFileWriter,
       final FactoryBuilder factoryBuilder) {
+
     this.beanLoader = beanLoader;
     this.javaFileWriter = javaFileWriter;
     this.factoryBuilder = factoryBuilder;
@@ -33,13 +32,13 @@ class ProcessorDelegate {
       return true;
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    final ValueGraph<BeanElement, Dependency> beanGraph = beanLoader.loadBeans(roundEnv);
+    final Set<Bean> beans = beanLoader.loadBeans(roundEnv);
 
-    for (final BeanElement bean : beanGraph.nodes()) {
-      final JavaFile factory = factoryBuilder.createFactory(bean, beanGraph);
+    for (final Bean bean : beans) {
+      final JavaFile factory = factoryBuilder.createFactory(bean);
       javaFileWriter.writeJavaFile(bean.toString().concat("Factory"), factory);
     }
+
     return true;
   }
 }

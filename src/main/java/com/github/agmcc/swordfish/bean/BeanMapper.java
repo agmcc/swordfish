@@ -1,7 +1,9 @@
 package com.github.agmcc.swordfish.bean;
 
-import com.github.agmcc.swordfish.domain.BeanDefinitionType;
-import com.github.agmcc.swordfish.domain.BeanElement;
+import com.github.agmcc.swordfish.domain.Bean;
+import com.github.agmcc.swordfish.domain.Name;
+import com.github.agmcc.swordfish.inject.ConstructorInjector;
+import com.github.agmcc.swordfish.inject.StaticProviderInjector;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,11 +15,10 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 
 public class BeanMapper {
 
-  public BeanElement mapBeanElement(final Element namedElement) {
+  Bean mapBean(final Element namedElement) {
     switch (namedElement.getKind()) {
       case CLASS:
         return mapClassElement((TypeElement) namedElement);
@@ -28,7 +29,7 @@ public class BeanMapper {
     }
   }
 
-  private BeanElement mapClassElement(final TypeElement classElement) {
+  private Bean mapClassElement(final TypeElement classElement) {
     final Set<Modifier> classModifiers = classElement.getModifiers();
     if (!classModifiers.contains(Modifier.PUBLIC)) {
       throw new RuntimeException("Named classes must be public");
@@ -46,13 +47,13 @@ public class BeanMapper {
     }
 
     final ExecutableElement constructorElement = (ExecutableElement) beanConstructors.get(0);
-    final List<String> constructorArgs = getArgumentTypes(constructorElement);
+    final List<Name> constructorArgs = getArgumentTypes(constructorElement);
 
-    return new BeanElement(
-        BeanDefinitionType.CLASS, getQualifiedName(classElement), constructorArgs);
+    // TODO: Hardcoded to constructor injection
+    return new Bean(new Name(classElement.toString()), new ConstructorInjector(constructorArgs));
   }
 
-  private BeanElement mapMethodElement(final ExecutableElement methodElement) {
+  private Bean mapMethodElement(final ExecutableElement methodElement) {
     final Set<Modifier> classModifiers = methodElement.getModifiers();
     if (!classModifiers.contains(Modifier.PUBLIC)) {
       throw new RuntimeException("Named methods must be public");
@@ -64,7 +65,7 @@ public class BeanMapper {
       throw new RuntimeException("Named methods cannot be static");
     }
 
-    final List<String> dependencies = getArgumentTypes(methodElement);
+    final List<Name> methodArgs = getArgumentTypes(methodElement);
 
     final Element enclosingElement = methodElement.getEnclosingElement();
     final Set<Modifier> enclosingElementModifiers = enclosingElement.getModifiers();
@@ -85,15 +86,13 @@ public class BeanMapper {
       throw new RuntimeException("Provider method classes cannot be declared in inner classes");
     }
 
-    final BeanElement beanElement =
-        new BeanElement(
-            BeanDefinitionType.METHOD,
-            getQualifiedName(methodElement.getReturnType()),
-            dependencies);
-
-    beanElement.setProvider(methodElement);
-
-    return beanElement;
+    // TODO: Hardcoded to static method provider injection
+    return new Bean(
+        new Name(methodElement.getReturnType().toString()),
+        new StaticProviderInjector(
+            new Name(enclosingElement.toString()),
+            methodElement.getSimpleName().toString(),
+            methodArgs));
   }
 
   private List<? extends Element> getBeanConstructors(final TypeElement typeElement) {
@@ -104,18 +103,9 @@ public class BeanMapper {
         .collect(Collectors.toList());
   }
 
-  private List<String> getArgumentTypes(final ExecutableElement executableElement) {
+  private List<Name> getArgumentTypes(final ExecutableElement executableElement) {
     return executableElement.getParameters().stream()
-        .map(Element::asType)
-        .map(TypeMirror::toString)
+        .map(e -> new Name(e.asType().toString()))
         .collect(Collectors.toList());
-  }
-
-  private String getQualifiedName(final TypeElement typeElement) {
-    return typeElement.toString();
-  }
-
-  private String getQualifiedName(final TypeMirror typeMirror) {
-    return typeMirror.toString();
   }
 }
