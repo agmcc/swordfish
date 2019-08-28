@@ -15,12 +15,23 @@ version = '0.2.0'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
+ext {
+    junitVersion = '5.4.2'
+    mockitoVersion = '2.28.2'
+}
+
 repositories {
     mavenCentral()
 }
 
 testSets {
     integrationTest
+}
+
+configurations {
+    integrationTestImplementation {
+        exclude group: 'org.junit.jupiter'
+    }
 }
 
 dependencies {
@@ -30,9 +41,20 @@ dependencies {
     implementation 'com.squareup:javapoet:1.11.1'
     implementation 'com.google.guava:guava:28.0-jre'
 
+    /* UNIT TEST */
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+
     /* INTEGRATION TEST */
     integrationTestImplementation 'com.google.truth:truth:0.30'
     integrationTestImplementation 'com.google.testing.compile:compile-testing:0.18'
+
+    integrationTestRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
 
     // Needed for JDK 8
     if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
@@ -41,6 +63,7 @@ dependencies {
 }
 
 tasks.withType(Test) {
+    useJUnitPlatform()
     testLogging {
         events 'failed', 'standard_error'
         exceptionFormat = 'full'
@@ -70,7 +93,6 @@ jacocoTestReport {
     dependsOn check
     reports {
         xml.enabled true
-        html.enabled false
     }
     executionData = fileTree(buildDir).include("/jacoco/*.exec")
 }

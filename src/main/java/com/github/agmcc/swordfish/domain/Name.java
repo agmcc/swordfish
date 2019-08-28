@@ -10,14 +10,21 @@ public class Name {
 
   private final String packageName;
 
-  public Name(final String qualifiedName) {
+  private Name(final String qualifiedName, final String simpleName, final String packageName) {
+    this.qualifiedName = qualifiedName;
+    this.simpleName = simpleName;
+    this.packageName = packageName;
+  }
+
+  public static Name from(final String qualifiedName) {
     if (qualifiedName == null || qualifiedName.isEmpty() || qualifiedName.trim().isEmpty()) {
       throw new IllegalArgumentException("Name cannot be empty");
     }
 
-    this.qualifiedName = qualifiedName;
+    final String simpleName;
+    final String packageName;
 
-    final int separator = qualifiedName.lastIndexOf(".");
+    final int separator = qualifiedName.lastIndexOf('.');
 
     if (separator == -1) {
       simpleName = qualifiedName;
@@ -26,6 +33,8 @@ public class Name {
       simpleName = qualifiedName.substring(separator + 1);
       packageName = qualifiedName.substring(0, separator);
     }
+
+    return new Name(qualifiedName, simpleName, packageName);
   }
 
   public String getSimpleName() {

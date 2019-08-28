@@ -50,7 +50,7 @@ public class BeanMapper {
     final List<Name> constructorArgs = getArgumentTypes(constructorElement);
 
     // TODO: Hardcoded to constructor injection
-    return new Bean(new Name(classElement.toString()), new ConstructorInjector(constructorArgs));
+    return new Bean(Name.from(classElement.toString()), new ConstructorInjector(constructorArgs));
   }
 
   private Bean mapMethodElement(final ExecutableElement methodElement) {
@@ -88,9 +88,9 @@ public class BeanMapper {
 
     // TODO: Hardcoded to static method provider injection
     return new Bean(
-        new Name(methodElement.getReturnType().toString()),
+        Name.from(methodElement.getReturnType().toString()),
         new StaticProviderInjector(
-            new Name(enclosingElement.toString()),
+            Name.from(enclosingElement.toString()),
             methodElement.getSimpleName().toString(),
             methodArgs));
   }
@@ -105,7 +105,7 @@ public class BeanMapper {
 
   private List<Name> getArgumentTypes(final ExecutableElement executableElement) {
     return executableElement.getParameters().stream()
-        .map(e -> new Name(e.asType().toString()))
+        .map(e -> Name.from(e.asType().toString()))
         .collect(Collectors.toList());
   }
 }
