@@ -25,6 +25,12 @@ public class FactoryBuilder {
 
     setInitializer(bean, className, instanceBuilder);
 
+    final MethodSpec constructor =
+        MethodSpec.constructorBuilder()
+            .addModifiers(Modifier.PRIVATE)
+            .addComment("Static access")
+            .build();
+
     final MethodSpec getInstance =
         MethodSpec.methodBuilder("getInstance")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -36,6 +42,7 @@ public class FactoryBuilder {
         TypeSpec.classBuilder(className.simpleName().concat("Factory"))
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .addField(instanceBuilder.build())
+            .addMethod(constructor)
             .addMethod(getInstance)
             .build();
 
