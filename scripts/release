@@ -6,13 +6,28 @@ if [ -z "$1" ]; then
 fi
 
 VERSION=$1
+
+# README.md
 README=./README.md
 ARTIFACT='(com\.github\.agmcc:swordfish:)[0-9]+\.[0-9]+\.[0-9]+'
-REPLACE="\1$VERSION"
+ARTIFACT_REPLACE="\1$VERSION"
 
-echo "Setting $README version to $VERSION"
-sed -i -E "s/$ARTIFACT/$REPLACE/g" $README
+sed -i -E "s/$ARTIFACT/$ARTIFACT_REPLACE/g" $README
 
-git add $README
+# build.gradle
+BUILD=./build.gradle
+VERSION_REGEX="(version\s*=\s*)'[0-9]+\.[0-9]+\.[0-9]+'"
+VERSION_REPLACE="\1'$VERSION'"
+
+sed -i -E "s/$VERSION_REGEX/$VERSION_REPLACE/g" $BUILD
+
+# sonar-project.properties
+SONAR=./sonar-project.properties
+SONAR_REGEX='(sonar\.projectVersion\s*=\s*)[0-9]+\.[0-9]+\.[0-9]+'
+SONAR_REPLACE="\1$VERSION"
+
+sed -i -E "s/$SONAR_REGEX/$SONAR_REPLACE/g" $SONAR
+
+git add $README $BUILD $SONAR
 git commit -m "Release $VERSION"
 git tag -s "$VERSION" -m "Release version $VERSION"
