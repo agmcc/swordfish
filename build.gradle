@@ -5,6 +5,7 @@ plugins {
     id 'maven-publish'
     id 'com.github.sherter.google-java-format' version '0.8'
     id 'jacoco'
+    id 'org.unbroken-dome.test-sets' version '2.1.1'
 }
 
 group 'com.github.agmcc'
@@ -18,6 +19,10 @@ repositories {
     mavenCentral()
 }
 
+testSets {
+    integrationTest
+}
+
 dependencies {
     /* PRODUCTION */
     api 'javax.inject:javax.inject:1'
@@ -25,13 +30,13 @@ dependencies {
     implementation 'com.squareup:javapoet:1.11.1'
     implementation 'com.google.guava:guava:28.0-jre'
 
-    /* TEST */
-    testImplementation 'com.google.truth:truth:0.30'
-    testImplementation 'com.google.testing.compile:compile-testing:0.18'
+    /* INTEGRATION TEST */
+    integrationTestImplementation 'com.google.truth:truth:0.30'
+    integrationTestImplementation 'com.google.testing.compile:compile-testing:0.18'
 
     // Needed for JDK 8
     if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
-        testImplementation files(Jvm.current().getToolsJar())
+        integrationTestImplementation files(Jvm.current().getToolsJar())
     }
 }
 
@@ -62,9 +67,13 @@ publishing {
 }
 
 jacocoTestReport {
-    dependsOn test
+    dependsOn check
     reports {
         xml.enabled true
         html.enabled false
     }
+    executionData = fileTree(buildDir).include("/jacoco/*.exec")
 }
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
