@@ -30,7 +30,7 @@ dependencies {
 ## Usage
 
 Classes managed by the framework (beans) are annotated with `javax.inject.Named`.
-A public constructor, annotated with `javax.inject.Inject` is also required.
+A public constructor, annotated with `javax.inject.Inject` is used to declare dependencies.
 
 ```java
 // Package declaration and imports
@@ -42,6 +42,13 @@ public class Engine {
     // Use injected Piston
   } 
 }
+```
+
+If a bean has no dependencies, the default constructor is sufficient.
+
+```java
+@Named
+public class Piston {}
 ```
 
 A factory class is generated for each bean, which can be used to retrieve a fully constructed instance
@@ -65,9 +72,11 @@ Any parameters on the method will be injected as bean dependencies.
 @Named
 public class PistonConfig {
   
-  @Inject
-  public PistonConfig(){}
-  
+   @Named
+   public Oil () {
+     return new Oil();
+   }
+
   @Named
   public Piston piston(Oil oil) {
     return new Piston(oil);

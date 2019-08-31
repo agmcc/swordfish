@@ -48,6 +48,8 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
 
+    testImplementation 'org.assertj:assertj-core:3.13.2'
+
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 
     /* INTEGRATION TEST */
@@ -99,3 +101,10 @@ jacocoTestReport {
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
+
+// Needed to suppress "internal proprietary API" warnings
+compileTestJava {
+    options.compilerArgs << '-XDignore.symbol.file'
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}

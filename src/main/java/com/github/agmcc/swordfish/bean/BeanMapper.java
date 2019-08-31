@@ -38,15 +38,7 @@ public class BeanMapper {
       throw new RuntimeException("Named classes cannot be abstract");
     }
 
-    final List<? extends Element> beanConstructors = getBeanConstructors(classElement);
-    if (beanConstructors.isEmpty()) {
-      throw new RuntimeException("Missing public, @Inject constructor for bean: " + classElement);
-    } else if (beanConstructors.size() > 1) {
-      throw new RuntimeException(
-          "Multiple valid @Inject constructors present for bean: " + classElement);
-    }
-
-    final ExecutableElement constructorElement = (ExecutableElement) beanConstructors.get(0);
+    final ExecutableElement constructorElement = getBeanConstructor(classElement);
     final List<Name> constructorArgs = getArgumentTypes(constructorElement);
 
     // TODO: Hardcoded to constructor injection
@@ -95,17 +87,50 @@ public class BeanMapper {
             methodArgs));
   }
 
-  private List<? extends Element> getBeanConstructors(final TypeElement typeElement) {
-    return typeElement.getEnclosedElements().stream()
-        .filter(e -> (e.getKind() == ElementKind.CONSTRUCTOR))
-        .filter(e -> e.getAnnotation(Inject.class) != null)
-        .filter(e -> (e.getModifiers().contains(Modifier.PUBLIC)))
-        .collect(Collectors.toList());
-  }
-
   private List<Name> getArgumentTypes(final ExecutableElement executableElement) {
     return executableElement.getParameters().stream()
         .map(e -> Name.from(e.asType().toString()))
         .collect(Collectors.toList());
+  }
+
+  private ExecutableElement getBeanConstructor(final TypeElement classElement) {
+    final List<ExecutableElement> constructors =
+        classElement.getEnclosedElements().stream()
+            .filter(e -> (e.getKind() == ElementKind.CONSTRUCTOR))
+            .map(e -> (ExecutableElement) e)
+            .collect(Collectors.toList());
+
+    if (hasDefaultConstructor(constructors)) {
+      return constructors.get(0);
+    } else {
+      return getInjectConstructor(constructors, classElement);
+    }
+  }
+
+  private boolean hasDefaultConstructor(final List<ExecutableElement> constructors) {
+    if (constructors.size() == 1) {
+      final ExecutableElement constructor = constructors.get(0);
+      return constructor.getParameters().isEmpty()
+          && constructor.getModifiers().contains(Modifier.PUBLIC);
+    } else {
+      return false;
+    }
+  }
+
+  private ExecutableElement getInjectConstructor(
+      final List<ExecutableElement> constructors, final TypeElement classElement) {
+    final List<ExecutableElement> injectConstructors =
+        constructors.stream()
+            .filter(e -> e.getAnnotation(Inject.class) != null)
+            .filter(e -> e.getModifiers().contains(Modifier.PUBLIC))
+            .collect(Collectors.toList());
+
+    if (injectConstructors.isEmpty()) {
+      throw new RuntimeException("Missing public, @Inject constructor for bean: " + classElement);
+    } else if (injectConstructors.size() > 1) {
+      throw new RuntimeException("Multiple @Inject constructors present for bean: " + classElement);
+    } else {
+      return injectConstructors.get(0);
+    }
   }
 }
