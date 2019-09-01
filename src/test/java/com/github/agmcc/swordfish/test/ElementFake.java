@@ -2,7 +2,6 @@ package com.github.agmcc.swordfish.test;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +12,6 @@ import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeMirror;
-import sun.reflect.annotation.AnnotationParser;
 
 public class ElementFake implements Element {
 
@@ -77,12 +75,12 @@ public class ElementFake implements Element {
   @Override
   @SuppressWarnings("unchecked")
   public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
-    return annotationClasses.stream()
-        .filter(c -> c.isAssignableFrom(annotationType))
-        .findAny()
-        // TODO: Replace internal API usage
-        .map(a -> (A) AnnotationParser.annotationForMap(annotationType, Collections.emptyMap()))
-        .orElse(null);
+    return (A)
+        annotationClasses.stream()
+            .filter(c -> c.isAssignableFrom(annotationType))
+            .findAny()
+            .map(c -> (Annotation) () -> c)
+            .orElse(null);
   }
 
   @Override

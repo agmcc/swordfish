@@ -101,10 +101,3 @@ jacocoTestReport {
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
-
-// Needed to suppress "internal proprietary API" warnings
-compileTestJava {
-    options.compilerArgs << '-XDignore.symbol.file'
-    options.fork = true
-    options.forkOptions.executable = 'javac'
-}
