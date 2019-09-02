@@ -23,7 +23,9 @@ public class SwordfishProcessorTest {
                 "input/Ink.java",
                 "input/Paper.java",
                 "input/PaperSize.java",
-                "input/PaperConfig.java")
+                "input/PaperConfig.java",
+                "input/Nozzle.java",
+                "input/NozzleConfig.java")
             .map(JavaFileObjects::forResource)
             .collect(Collectors.toList());
 
@@ -39,6 +41,7 @@ public class SwordfishProcessorTest {
             JavaFileObjects.forResource("output/InkFactory.java"),
             JavaFileObjects.forResource("output/PaperConfigFactory.java"),
             JavaFileObjects.forResource("output/PaperFactory.java"),
-            JavaFileObjects.forResource("output/PaperSizeFactory.java"));
+            JavaFileObjects.forResource("output/PaperSizeFactory.java"),
+            JavaFileObjects.forResource("output/NozzleFactory.java"));
   }
 }

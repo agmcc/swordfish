@@ -84,6 +84,19 @@ public class PistonConfig {
 }
 ```
 
+Beans can also be declared with static methods. This can be useful if you don't want to expose the
+enclosing class as a bean and the method doesn't need access to the class instance.
+
+```java
+public class NozzleConfig {
+
+  @Named
+  public static Nozzle nozzle() {
+    return new Nozzle();
+  }
+}
+```
+
 ## Building
 
 Clone the project and run the following in the root directory:

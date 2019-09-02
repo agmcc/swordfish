@@ -2,7 +2,8 @@ package swordfish;
 
 public final class InkCartridgeFactory {
 
-  private static final InkCartridge instance = new InkCartridge(InkFactory.getInstance());
+  private static final InkCartridge instance =
+      new InkCartridge(InkFactory.getInstance(), NozzleFactory.getInstance());
 
   private InkCartridgeFactory() {
     // Static access

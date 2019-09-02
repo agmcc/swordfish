@@ -4,5 +4,7 @@ public interface InjectorVisitor {
 
   void visit(ConstructorInjector injector);
 
-  void visit(StaticProviderInjector injector);
+  void visit(BeanMethodInjector injector);
+
+  void visit(StaticMethodInjector injector);
 }

@@ -1,9 +1,10 @@
 package com.github.agmcc.swordfish.factory;
 
 import com.github.agmcc.swordfish.domain.Name;
+import com.github.agmcc.swordfish.inject.BeanMethodInjector;
 import com.github.agmcc.swordfish.inject.ConstructorInjector;
 import com.github.agmcc.swordfish.inject.InjectorVisitor;
-import com.github.agmcc.swordfish.inject.StaticProviderInjector;
+import com.github.agmcc.swordfish.inject.StaticMethodInjector;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import java.util.List;
@@ -38,14 +39,13 @@ public class FactoryInjectorVisitor implements InjectorVisitor {
   }
 
   @Override
-  public void visit(final StaticProviderInjector injector) {
+  public void visit(final BeanMethodInjector injector) {
     final List<ClassName> dependencyClassNames =
         getDependencyClassNames(injector.getDependencies());
 
-    final Name providerName = injector.getProviderName();
-    final ClassName providerClassName =
-        ClassName.get(
-            providerName.getPackageName(), providerName.getSimpleName().concat("Factory"));
+    final Name beanName = injector.getMethodClassName();
+    final ClassName beanClassName =
+        ClassName.get(beanName.getPackageName(), beanName.getSimpleName().concat("Factory"));
 
     final StringJoiner methodJoiner = new StringJoiner(", ", "$T.getInstance().$L(", ")");
     dependencyClassNames.forEach(d -> methodJoiner.add("$T.getInstance()"));
@@ -53,8 +53,27 @@ public class FactoryInjectorVisitor implements InjectorVisitor {
 
     final Object[] args =
         Stream.concat(
-                Stream.of(providerClassName, injector.getProviderMethod()),
-                dependencyClassNames.stream())
+                Stream.of(beanClassName, injector.getMethodName()), dependencyClassNames.stream())
+            .toArray();
+
+    builder.initializer(methodPattern, args);
+  }
+
+  @Override
+  public void visit(final StaticMethodInjector injector) {
+    final List<ClassName> dependencyClassNames =
+        getDependencyClassNames(injector.getDependencies());
+
+    final Name staticClassName = injector.getMethodClassName();
+    final ClassName className =
+        ClassName.get(staticClassName.getPackageName(), staticClassName.getSimpleName());
+
+    final StringJoiner methodJoiner = new StringJoiner(", ", "$T.$L(", ")");
+    dependencyClassNames.forEach(d -> methodJoiner.add("$T.getInstance()"));
+    final String methodPattern = methodJoiner.toString();
+
+    final Object[] args =
+        Stream.concat(Stream.of(className, injector.getMethodName()), dependencyClassNames.stream())
             .toArray();
 
     builder.initializer(methodPattern, args);

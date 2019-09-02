@@ -2,8 +2,10 @@ package com.github.agmcc.swordfish.bean;
 
 import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.domain.Name;
+import com.github.agmcc.swordfish.inject.BeanMethodInjector;
 import com.github.agmcc.swordfish.inject.ConstructorInjector;
-import com.github.agmcc.swordfish.inject.StaticProviderInjector;
+import com.github.agmcc.swordfish.inject.Injector;
+import com.github.agmcc.swordfish.inject.StaticMethodInjector;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,13 +55,9 @@ public class BeanMapper {
     if (classModifiers.contains(Modifier.ABSTRACT)) {
       throw new RuntimeException("Named methods cannot be abstract");
     }
-    if (classModifiers.contains(Modifier.STATIC)) {
-      throw new RuntimeException("Named methods cannot be static");
-    }
-
-    final List<Name> methodArgs = getArgumentTypes(methodElement);
 
     final Element enclosingElement = methodElement.getEnclosingElement();
+
     final Set<Modifier> enclosingElementModifiers = enclosingElement.getModifiers();
     if (enclosingElement.getKind() != ElementKind.CLASS) {
       throw new RuntimeException("Provider method must be declared in a class");
@@ -70,21 +68,28 @@ public class BeanMapper {
     if (enclosingElementModifiers.contains(Modifier.ABSTRACT)) {
       throw new RuntimeException("Named classes cannot be abstract");
     }
-    if (enclosingElement.getAnnotation(Named.class) == null) {
-      throw new RuntimeException("Provider method must be declared in a Named class");
-    }
     final TypeElement enclosingTypeElement = (TypeElement) enclosingElement;
     if (enclosingTypeElement.getNestingKind() != NestingKind.TOP_LEVEL) {
       throw new RuntimeException("Provider method classes cannot be declared in inner classes");
     }
 
-    // TODO: Hardcoded to static method provider injection
-    return new Bean(
-        Name.from(methodElement.getReturnType().toString()),
-        new StaticProviderInjector(
-            Name.from(enclosingElement.toString()),
-            methodElement.getSimpleName().toString(),
-            methodArgs));
+    final Injector methodInjector;
+
+    final Name methodClassName = Name.from(enclosingElement.toString());
+    final String methodName = methodElement.getSimpleName().toString();
+    final List<Name> methodArgs = getArgumentTypes(methodElement);
+
+    if (classModifiers.contains(Modifier.STATIC)) {
+      methodInjector = new StaticMethodInjector(methodClassName, methodName, methodArgs);
+    } else {
+      if (enclosingElement.getAnnotation(Named.class) == null) {
+        throw new RuntimeException("Provider method must be declared in a Named class");
+      }
+
+      methodInjector = new BeanMethodInjector(methodClassName, methodName, methodArgs);
+    }
+
+    return new Bean(Name.from(methodElement.getReturnType().toString()), methodInjector);
   }
 
   private List<Name> getArgumentTypes(final ExecutableElement executableElement) {

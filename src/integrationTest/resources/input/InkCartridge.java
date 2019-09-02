@@ -7,5 +7,5 @@ import javax.inject.Named;
 public class InkCartridge {
 
   @Inject
-  public InkCartridge(final Ink ink) {}
+  public InkCartridge(final Ink ink, final Nozzle Nozzle) {}
 }
