@@ -29,10 +29,13 @@ import java.util.List;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 
 class BeanMapperTest {
 
@@ -66,15 +69,6 @@ class BeanMapperTest {
     private static final String QUALIFIED_NAME = "swordfish.Printer";
 
     @Test
-    void mapBean_classNotPublic_throws() {
-      final Element classElement = TypeElementFake.builder().kind(CLASS).build();
-
-      assertThatExceptionOfType(RuntimeException.class)
-          .isThrownBy(() -> beanMapper.mapBean(classElement))
-          .withMessage("Named classes must be public");
-    }
-
-    @Test
     void mapBean_classAbstract_throws() {
       final Element classElement =
           TypeElementFake.builder()
@@ -100,23 +94,46 @@ class BeanMapperTest {
 
       assertThatExceptionOfType(RuntimeException.class)
           .isThrownBy(() -> beanMapper.mapBean(classElement))
-          .withMessage("Missing public, @Inject constructor for bean: swordfish.Printer");
+          .withMessage("Missing @Inject constructor for bean: swordfish.Printer");
     }
 
     @Test
-    void mapBean_defaultConstructor_mapped() {
+    void mapBean_privateClass_throws() {
+      final Element classElement =
+          TypeElementFake.builder()
+              .qualifiedName(QUALIFIED_NAME)
+              .kind(CLASS)
+              .modifier(PRIVATE)
+              .enclosingElements(
+                  Collections.singletonList(
+                      ExecutableElementFake.builder()
+                          .kind(CONSTRUCTOR)
+                          .modifier(PUBLIC)
+                          .annotationClass(Inject.class)
+                          .build()))
+              .build();
+
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(() -> beanMapper.mapBean(classElement))
+          .withMessage("Named elements cannot be private");
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Modifier.class, names = "PUBLIC")
+    @NullSource
+    void mapBean_defaultConstructor_mapped(final Modifier modifier) {
       // Given
       final Element classElement =
           TypeElementFake.builder()
               .qualifiedName(QUALIFIED_NAME)
               .kind(CLASS)
-              .modifier(PUBLIC)
+              .modifier(modifier)
               .enclosingElements(
                   Collections.singletonList(
                       ExecutableElementFake.builder()
                           .parameters(Collections.emptyList())
                           .kind(CONSTRUCTOR)
-                          .modifier(PUBLIC)
+                          .modifier(modifier)
                           .build()))
               .build();
 
@@ -148,7 +165,7 @@ class BeanMapperTest {
 
       assertThatExceptionOfType(RuntimeException.class)
           .isThrownBy(() -> beanMapper.mapBean(classElement))
-          .withMessage("Missing public, @Inject constructor for bean: swordfish.Printer");
+          .withMessage("Missing @Inject constructor for bean: swordfish.Printer");
     }
 
     @Test
@@ -179,8 +196,10 @@ class BeanMapperTest {
           .withMessage("Multiple @Inject constructors present for bean: swordfish.Printer");
     }
 
-    @Test
-    void mapBean_singleInjectConstructor_mapped() {
+    @ParameterizedTest
+    @EnumSource(value = Modifier.class, names = "PUBLIC")
+    @NullSource
+    void mapBean_singleInjectConstructor_mapped(final Modifier modifier) {
       // Given
       final String dependencyQualifiedName = "swordfish.InkCartridge";
 
@@ -188,7 +207,7 @@ class BeanMapperTest {
           TypeElementFake.builder()
               .qualifiedName(QUALIFIED_NAME)
               .kind(CLASS)
-              .modifier(PUBLIC)
+              .modifier(modifier)
               .enclosingElements(
                   Collections.singletonList(
                       ExecutableElementFake.builder()
@@ -202,7 +221,7 @@ class BeanMapperTest {
                                       .build()))
                           .annotationClass(Inject.class)
                           .kind(CONSTRUCTOR)
-                          .modifier(PUBLIC)
+                          .modifier(modifier)
                           .build()))
               .build();
 

@@ -9,9 +9,12 @@ public class Bean {
 
   private final Injector injector;
 
-  public Bean(final Name name, final Injector injector) {
+  private final Visibility visibility;
+
+  public Bean(final Name name, final Injector injector, final Visibility visibility) {
     this.name = name;
     this.injector = injector;
+    this.visibility = visibility;
   }
 
   public Name getName() {
@@ -20,6 +23,10 @@ public class Bean {
 
   public Injector getInjector() {
     return injector;
+  }
+
+  public Visibility getVisibility() {
+    return visibility;
   }
 
   @Override

@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.then;
 import com.github.agmcc.swordfish.bean.BeanLoader;
 import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.domain.Name;
+import com.github.agmcc.swordfish.domain.Visibility;
 import com.github.agmcc.swordfish.factory.FactoryBuilder;
 import com.github.agmcc.swordfish.inject.ConstructorInjector;
 import com.github.agmcc.swordfish.io.JavaFileWriter;
@@ -45,7 +46,10 @@ class ProcessorDelegateTest {
 
     // Given
     final Bean bean =
-        new Bean(Name.from("swordfish.Ink"), new ConstructorInjector(Collections.emptyList()));
+        new Bean(
+            Name.from("swordfish.Ink"),
+            new ConstructorInjector(Collections.emptyList()),
+            Visibility.PUBLIC);
 
     final Set<Bean> beans = new HashSet<>(Collections.singletonList(bean));
 

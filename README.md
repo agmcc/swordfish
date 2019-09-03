@@ -97,6 +97,28 @@ public class NozzleConfig {
 }
 ```
 
+Factories are generated with the same accessibility as the bean declaration. 
+
+```java
+class Gear {}
+```
+
+In the above example, a package-private factory is generated:
+
+```java
+final class GearFactory {
+  private static final Gear instance = new Gear();
+
+  private GearFactory() {
+    // Static access
+  }
+
+  static Gear getInstance() {
+    return instance;
+  }
+}
+```
+
 ## Building
 
 Clone the project and run the following in the root directory:
