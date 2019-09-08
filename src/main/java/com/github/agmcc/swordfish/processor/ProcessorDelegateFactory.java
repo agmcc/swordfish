@@ -4,6 +4,7 @@ import com.github.agmcc.swordfish.bean.BeanLoader;
 import com.github.agmcc.swordfish.bean.BeanMapper;
 import com.github.agmcc.swordfish.bean.GraphBuilder;
 import com.github.agmcc.swordfish.factory.FactoryBuilder;
+import com.github.agmcc.swordfish.factory.ModuleBuilder;
 import com.github.agmcc.swordfish.graph.GraphUtils;
 import com.github.agmcc.swordfish.io.JavaFileWriter;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -18,6 +19,7 @@ final class ProcessorDelegateFactory {
     return new ProcessorDelegate(
         new BeanLoader(new BeanMapper(), new GraphBuilder(), new GraphUtils()),
         new JavaFileWriter(processingEnv.getFiler()),
-        new FactoryBuilder());
+        new FactoryBuilder(),
+        new ModuleBuilder());
   }
 }

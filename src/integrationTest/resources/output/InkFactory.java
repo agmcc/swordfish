@@ -1,6 +1,6 @@
 package swordfish;
 
-final class InkFactory {
+public final class InkFactory {
 
   private static final Ink instance = new Ink();
 
@@ -8,7 +8,7 @@ final class InkFactory {
     // Static access
   }
 
-  static Ink getInstance() {
+  public static Ink getInstance() {
     return instance;
   }
 }

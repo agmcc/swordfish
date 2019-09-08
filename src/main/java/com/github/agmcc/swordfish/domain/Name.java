@@ -2,7 +2,7 @@ package com.github.agmcc.swordfish.domain;
 
 import java.util.Objects;
 
-public class Name {
+public class Name implements Comparable<Name> {
 
   private final String qualifiedName;
 
@@ -60,6 +60,11 @@ public class Name {
   @Override
   public int hashCode() {
     return Objects.hash(qualifiedName);
+  }
+
+  @Override
+  public int compareTo(final Name o) {
+    return qualifiedName.compareTo(o.qualifiedName);
   }
 
   @Override

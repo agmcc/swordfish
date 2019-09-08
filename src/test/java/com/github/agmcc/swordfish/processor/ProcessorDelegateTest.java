@@ -1,6 +1,7 @@
 package com.github.agmcc.swordfish.processor;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -9,6 +10,7 @@ import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.domain.Name;
 import com.github.agmcc.swordfish.domain.Visibility;
 import com.github.agmcc.swordfish.factory.FactoryBuilder;
+import com.github.agmcc.swordfish.factory.ModuleBuilder;
 import com.github.agmcc.swordfish.inject.ConstructorInjector;
 import com.github.agmcc.swordfish.io.JavaFileWriter;
 import com.squareup.javapoet.JavaFile;
@@ -35,6 +37,8 @@ class ProcessorDelegateTest {
 
   @Mock private FactoryBuilder factoryBuilder;
 
+  @Mock private ModuleBuilder moduleBuilder;
+
   @Test
   void process_annotationsEmpty_true() {
     assertTrue(processorDelegate.process(Collections.emptySet(), null));
@@ -53,12 +57,20 @@ class ProcessorDelegateTest {
 
     final Set<Bean> beans = new HashSet<>(Collections.singletonList(bean));
 
-    final JavaFile javaFile =
+    final JavaFile factoryFile =
         JavaFile.builder("swordfish", TypeSpec.classBuilder("Ink").build()).build();
+
+    final JavaFile moduleFile =
+        JavaFile.builder(
+                "com.github.agmcc.swordfish", TypeSpec.classBuilder("SwordfishModule").build())
+            .build();
 
     given(beanLoader.loadBeans(roundEnv)).willReturn(beans);
 
-    given(factoryBuilder.createFactory(bean)).willReturn(javaFile);
+    given(factoryBuilder.createFactory(bean)).willReturn(factoryFile);
+
+    given(moduleBuilder.createModule(argThat(m -> m.getBeans().equals(beans))))
+        .willReturn(moduleFile);
 
     // When
     final boolean result = processorDelegate.process(annotations, roundEnv);
@@ -66,6 +78,9 @@ class ProcessorDelegateTest {
     // Then
     assertTrue(result);
 
-    then(javaFileWriter).should().writeJavaFile("swordfish.InkFactory", javaFile);
+    then(javaFileWriter).should().writeJavaFile("swordfish.InkFactory", factoryFile);
+    then(javaFileWriter)
+        .should()
+        .writeJavaFile("com.github.agmcc.swordfish.SwordfishModule", moduleFile);
   }
 }

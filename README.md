@@ -51,14 +51,14 @@ If a bean has no dependencies, the default constructor is sufficient.
 public class Piston {}
 ```
 
-A factory class is generated for each bean, which can be used to retrieve a fully constructed instance
+A factory class is generated for each bean, which creates a fully constructed instance
 (including transitive dependencies).
 
-Typically, this will be done for the root object in the dependency graph.
+The bean is then accessible via the default module: `com.github.swordfish.SwordfishModule`.
 
 ```java
 public static void main(String[] args) {
-  Engine engine = EngineFactory.getInstance();
+  Engine engine = SwordfishModule.engine();
 }
 ```
 
@@ -85,7 +85,7 @@ public class PistonConfig {
 ```
 
 Beans can also be declared with static methods. This can be useful if you don't want to expose the
-enclosing class as a bean and the method doesn't need access to the class instance.
+enclosing class as a bean and the method doesn't need to access the class instance.
 
 ```java
 public class NozzleConfig {
@@ -93,28 +93,6 @@ public class NozzleConfig {
   @Named
   public static Nozzle nozzle() {
     return new Nozzle();
-  }
-}
-```
-
-Factories are generated with the same accessibility as the bean declaration. 
-
-```java
-class Gear {}
-```
-
-In the above example, a package-private factory is generated:
-
-```java
-final class GearFactory {
-  private static final Gear instance = new Gear();
-
-  private GearFactory() {
-    // Static access
-  }
-
-  static Gear getInstance() {
-    return instance;
   }
 }
 ```

@@ -3,4 +3,4 @@ package swordfish;
 import javax.inject.Named;
 
 @Named
-class Ink {}
+public class Ink {}

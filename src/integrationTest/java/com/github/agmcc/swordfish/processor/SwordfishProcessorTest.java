@@ -1,5 +1,7 @@
 package com.github.agmcc.swordfish.processor;
 
+import static com.google.testing.compile.JavaFileObjects.forResource;
+
 import com.google.common.truth.Truth;
 import com.google.testing.compile.JavaFileObjects;
 import com.google.testing.compile.JavaSourcesSubjectFactory;
@@ -25,7 +27,8 @@ public class SwordfishProcessorTest {
                 "input/PaperSize.java",
                 "input/PaperConfig.java",
                 "input/Nozzle.java",
-                "input/NozzleConfig.java")
+                "input/NozzleConfig.java",
+                "input/App.java")
             .map(JavaFileObjects::forResource)
             .collect(Collectors.toList());
 
@@ -36,12 +39,13 @@ public class SwordfishProcessorTest {
         .compilesWithoutError()
         .and()
         .generatesSources(
-            JavaFileObjects.forResource("output/PrinterFactory.java"),
-            JavaFileObjects.forResource("output/InkCartridgeFactory.java"),
-            JavaFileObjects.forResource("output/InkFactory.java"),
-            JavaFileObjects.forResource("output/PaperConfigFactory.java"),
-            JavaFileObjects.forResource("output/PaperFactory.java"),
-            JavaFileObjects.forResource("output/PaperSizeFactory.java"),
-            JavaFileObjects.forResource("output/NozzleFactory.java"));
+            forResource("output/PrinterFactory.java"),
+            forResource("output/InkCartridgeFactory.java"),
+            forResource("output/InkFactory.java"),
+            forResource("output/PaperConfigFactory.java"),
+            forResource("output/PaperFactory.java"),
+            forResource("output/PaperSizeFactory.java"),
+            forResource("output/NozzleFactory.java"),
+            forResource("output/SwordfishModule.java"));
   }
 }
