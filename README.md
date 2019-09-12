@@ -29,6 +29,8 @@ dependencies {
 
 ## Usage
 
+### Basics
+
 Classes managed by the framework (beans) are annotated with `javax.inject.Named`.
 A public constructor, annotated with `javax.inject.Inject` is used to declare dependencies.
 
@@ -54,13 +56,15 @@ public class Piston {}
 A factory class is generated for each bean, which creates a fully constructed instance
 (including transitive dependencies).
 
-The bean is then accessible via the default module: `com.github.swordfish.SwordfishModule`.
+The bean is then accessible via the default module: `com.github.swordfish.SwordfishDefaultModule`.
 
 ```java
 public static void main(String[] args) {
-  Engine engine = SwordfishModule.engine();
+  Engine engine = SwordfishDefaultModule.engine();
 }
 ```
+
+### Bean methods
 
 Beans can also be provided via methods, which allows the instance to be configured.
 
@@ -96,6 +100,36 @@ public class NozzleConfig {
   }
 }
 ```
+
+### Modules
+
+In addition to the default module, custom modules can be created by annotating an interface with 
+`com.github.agmcc.swordfish.annotation.Module`.
+
+This allows beans to be grouped together and only a subset of those beans exposed, which allows 
+for better encapsulation. 
+
+Beans are added to the module's scope with the `packages` field and exposed by declaring abstract
+methods. 
+
+```java
+@Module(packages = "swordfish")
+public interface EngineModule {
+  
+   Engine engine();
+}
+```
+
+In the example above, all beans in the `swordfish` package are added to the `EngineModule` scope, but only
+`Engine` is exposed. This bean can then be retrieved using the generated module class: 
+
+```java
+Engine engine = SwordfishEngineModule.engine();
+```
+
+Beans that are added to custom modules are not available in other modules, including the 
+default module. However, any beans that are not explicitly added to a module declaration will
+still be accessible from the default module.
 
 ## Building
 

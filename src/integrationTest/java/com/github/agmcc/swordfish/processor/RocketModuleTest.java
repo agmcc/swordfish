@@ -12,7 +12,7 @@ import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
 import org.junit.Test;
 
-public class SwordfishProcessorTest {
+public class RocketModuleTest {
 
   private static final Processor PROCESSOR = new SwordfishProcessor();
 
@@ -20,15 +20,11 @@ public class SwordfishProcessorTest {
   public void testFactoriesGenerated() {
     final List<JavaFileObject> input =
         Stream.of(
-                "input/Printer.java",
-                "input/InkCartridge.java",
-                "input/Ink.java",
-                "input/Paper.java",
-                "input/PaperSize.java",
-                "input/PaperConfig.java",
-                "input/Nozzle.java",
-                "input/NozzleConfig.java",
-                "input/App.java")
+                "input/rocket-module/rocket/Rocket.java",
+                "input/rocket-module/rocket/FuelTank.java",
+                "input/rocket-module/rocket/propulsion/Booster.java",
+                "input/rocket-module/rocket/RocketModule.java",
+                "input/rocket-module/rocket/Launchpad.java")
             .map(JavaFileObjects::forResource)
             .collect(Collectors.toList());
 
@@ -39,13 +35,9 @@ public class SwordfishProcessorTest {
         .compilesWithoutError()
         .and()
         .generatesSources(
-            forResource("output/PrinterFactory.java"),
-            forResource("output/InkCartridgeFactory.java"),
-            forResource("output/InkFactory.java"),
-            forResource("output/PaperConfigFactory.java"),
-            forResource("output/PaperFactory.java"),
-            forResource("output/PaperSizeFactory.java"),
-            forResource("output/NozzleFactory.java"),
-            forResource("output/SwordfishModule.java"));
+            forResource("output/rocket-module/rocket/RocketFactory.java"),
+            forResource("output/rocket-module/rocket/FuelTankFactory.java"),
+            forResource("output/rocket-module/rocket/propulsion/BoosterFactory.java"),
+            forResource("output/rocket-module/rocket/SwordfishRocketModule.java"));
   }
 }

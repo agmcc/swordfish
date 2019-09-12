@@ -15,14 +15,9 @@ import swordfish.PaperSizeFactory;
 import swordfish.Printer;
 import swordfish.PrinterFactory;
 
-/**
- * The default Swordfish module.
- *
- * <p>Used to access instances of beans that aren't explicitly define in a module.
- */
-public final class SwordfishModule {
+public final class SwordfishDefaultModule {
 
-  private SwordfishModule() {
+  private SwordfishDefaultModule() {
     // Static access
   }
 

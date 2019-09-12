@@ -3,10 +3,10 @@ package com.github.agmcc.swordfish.processor;
 import com.github.agmcc.swordfish.bean.BeanLoader;
 import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.domain.Module;
-import com.github.agmcc.swordfish.domain.Name;
 import com.github.agmcc.swordfish.factory.FactoryBuilder;
 import com.github.agmcc.swordfish.factory.ModuleBuilder;
 import com.github.agmcc.swordfish.io.JavaFileWriter;
+import com.github.agmcc.swordfish.module.ModuleLoader;
 import com.squareup.javapoet.JavaFile;
 import java.util.Set;
 import javax.annotation.processing.RoundEnvironment;
@@ -14,10 +14,9 @@ import javax.lang.model.element.TypeElement;
 
 class ProcessorDelegate {
 
-  private static final Name SWORDFISH_MODULE_NAME =
-      Name.from("com.github.agmcc.swordfish.SwordfishModule");
-
   private final BeanLoader beanLoader;
+
+  private final ModuleLoader moduleLoader;
 
   private final JavaFileWriter javaFileWriter;
 
@@ -27,11 +26,13 @@ class ProcessorDelegate {
 
   ProcessorDelegate(
       final BeanLoader beanLoader,
+      final ModuleLoader moduleLoader,
       final JavaFileWriter javaFileWriter,
       final FactoryBuilder factoryBuilder,
       final ModuleBuilder moduleBuilder) {
 
     this.beanLoader = beanLoader;
+    this.moduleLoader = moduleLoader;
     this.javaFileWriter = javaFileWriter;
     this.factoryBuilder = factoryBuilder;
     this.moduleBuilder = moduleBuilder;
@@ -43,15 +44,17 @@ class ProcessorDelegate {
     }
 
     final Set<Bean> beans = beanLoader.loadBeans(roundEnv);
+    final Set<Module> modules = moduleLoader.loadModules(roundEnv, beans);
 
     for (final Bean bean : beans) {
-      final JavaFile factory = factoryBuilder.createFactory(bean);
-      javaFileWriter.writeJavaFile(bean.toString().concat("Factory"), factory);
+      final JavaFile factoryFile = factoryBuilder.createFactory(bean);
+      javaFileWriter.writeJavaFile(bean.toString().concat("Factory"), factoryFile);
     }
 
-    final Module swordfishModule = new Module(SWORDFISH_MODULE_NAME, beans);
-    final JavaFile swordfishModuleFile = moduleBuilder.createModule(swordfishModule);
-    javaFileWriter.writeJavaFile(SWORDFISH_MODULE_NAME.toString(), swordfishModuleFile);
+    for (final Module module : modules) {
+      final JavaFile moduleFile = moduleBuilder.createModule(module);
+      javaFileWriter.writeJavaFile(module.getName().toString(), moduleFile);
+    }
 
     return true;
   }

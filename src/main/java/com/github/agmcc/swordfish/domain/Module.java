@@ -10,9 +10,12 @@ public class Module {
 
   private final Set<Bean> beans = new TreeSet<>(Comparator.comparing(Bean::getName));
 
-  public Module(final Name name, final Set<Bean> beans) {
+  private final Set<Bean> published = new TreeSet<>(Comparator.comparing(Bean::getName));
+
+  public Module(final Name name, final Set<Bean> beans, final Set<Bean> published) {
     this.name = name;
     this.beans.addAll(beans);
+    this.published.addAll(published);
   }
 
   public Name getName() {
@@ -21,6 +24,10 @@ public class Module {
 
   public Set<Bean> getBeans() {
     return beans;
+  }
+
+  public Set<Bean> getPublished() {
+    return published;
   }
 
   @Override

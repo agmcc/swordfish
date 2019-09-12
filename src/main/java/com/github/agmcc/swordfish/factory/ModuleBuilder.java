@@ -27,13 +27,10 @@ public class ModuleBuilder {
             .addComment("Static access")
             .build();
 
-    final List<MethodSpec> beanMethods = getBeanMethods(module.getBeans());
+    final List<MethodSpec> beanMethods = getBeanMethods(module.getPublished());
 
     final TypeSpec moduleSpec =
         TypeSpec.classBuilder(simpleName)
-            .addJavadoc("The default Swordfish module.\n\n")
-            .addJavadoc(
-                "<p>Used to access instances of beans that aren't explicitly define in a module.\n")
             .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
             .addMethod(constructor)
             .addMethods(beanMethods)
