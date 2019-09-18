@@ -3,12 +3,14 @@ package com.github.agmcc.swordfish.processor;
 import com.github.agmcc.swordfish.bean.BeanLoader;
 import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.domain.Module;
+import com.github.agmcc.swordfish.domain.Name;
 import com.github.agmcc.swordfish.factory.FactoryBuilder;
 import com.github.agmcc.swordfish.factory.ModuleBuilder;
 import com.github.agmcc.swordfish.io.JavaFileWriter;
 import com.github.agmcc.swordfish.module.ModuleLoader;
 import com.squareup.javapoet.JavaFile;
 import java.util.Set;
+import java.util.StringJoiner;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.TypeElement;
 
@@ -53,9 +55,17 @@ class ProcessorDelegate {
 
     for (final Module module : modules) {
       final JavaFile moduleFile = moduleBuilder.createModule(module);
-      javaFileWriter.writeJavaFile(module.getName().toString(), moduleFile);
+      javaFileWriter.writeJavaFile(getModuleFileName(module), moduleFile);
     }
 
     return true;
+  }
+
+  private String getModuleFileName(final Module module) {
+    final Name name = module.getName();
+    return new StringJoiner(".")
+        .add(name.getPackageName())
+        .add("Swordfish".concat(name.getSimpleName()))
+        .toString();
   }
 }

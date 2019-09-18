@@ -60,7 +60,7 @@ class ProcessorDelegateTest {
     final Set<Bean> beans = Collections.singleton(bean);
 
     final Module module =
-        new Module(Name.from("com.github.agmcc.swordfish.SwordfishDefaultModule"), beans, beans);
+        new Module(Name.from("com.github.agmcc.swordfish.DefaultModule"), beans, beans);
 
     final JavaFile factoryFile =
         JavaFile.builder("swordfish", TypeSpec.classBuilder("Ink").build()).build();

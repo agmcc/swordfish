@@ -1,8 +1,13 @@
 package com.github.agmcc.swordfish.graph;
 
 import com.google.common.graph.Graph;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
 public class GraphUtils {
@@ -20,6 +25,33 @@ public class GraphUtils {
       }
     }
     return false;
+  }
+
+  public <N> Iterator<N> dfsIterator(final N root, final Graph<N> graph) {
+    return new Iterator<N>() {
+
+      private final Deque<N> stack = new ArrayDeque<>();
+      private final Set<N> discovered = new HashSet<>();
+
+      {
+        stack.push(root);
+      }
+
+      @Override
+      public boolean hasNext() {
+        return !stack.isEmpty();
+      }
+
+      @Override
+      public N next() {
+        final N node = stack.pop();
+        if (!discovered.contains(node)) {
+          discovered.add(node);
+          graph.successors(node).forEach(stack::push);
+        }
+        return node;
+      }
+    };
   }
 
   private <N> boolean dfs(final Graph<N> graph, final N node, final Map<N, SearchState> state) {

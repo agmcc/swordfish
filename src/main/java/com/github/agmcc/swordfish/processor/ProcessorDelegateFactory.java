@@ -18,9 +18,11 @@ final class ProcessorDelegateFactory {
   }
 
   static ProcessorDelegate create(final ProcessingEnvironment processingEnv) {
+    final GraphUtils graphUtils = new GraphUtils();
+
     return new ProcessorDelegate(
-        new BeanLoader(new BeanMapper(), new GraphBuilder(), new GraphUtils()),
-        new ModuleLoader(new ModuleMapper()),
+        new BeanLoader(new BeanMapper(), new GraphBuilder(), graphUtils),
+        new ModuleLoader(new ModuleMapper(processingEnv.getTypeUtils()), graphUtils),
         new JavaFileWriter(processingEnv.getFiler()),
         new FactoryBuilder(),
         new ModuleBuilder());

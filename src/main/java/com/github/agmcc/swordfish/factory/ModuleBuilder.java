@@ -19,7 +19,7 @@ public class ModuleBuilder {
 
     final Name name = module.getName();
     final String packageName = name.getPackageName();
-    final String simpleName = name.getSimpleName();
+    final String simpleName = "Swordfish" + name.getSimpleName();
 
     final MethodSpec constructor =
         MethodSpec.constructorBuilder()

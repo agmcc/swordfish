@@ -131,6 +131,28 @@ Beans that are added to custom modules are not available in other modules, inclu
 default module. However, any beans that are not explicitly added to a module declaration will
 still be accessible from the default module.
 
+Modules can also import other modules, via `uses`:
+
+```java
+// ApiModule.java
+@Module(packages = "api", uses = DataModule.class)
+public interface ApiModule {
+
+   Controller controller();
+}
+
+// DataModule.java
+@Module(packages = "data")
+public interface DataModule {
+
+   Database database();
+}
+```
+
+In the above example, all beans in the ApiModule can access the Database bean defined by DataModule,
+as it is imported into the current module scope via `uses`. However, none of the other beans from the DataModule
+are exposed, so these aren't leaked to the ApiModule.
+
 ## Building
 
 Clone the project and run the following in the root directory:

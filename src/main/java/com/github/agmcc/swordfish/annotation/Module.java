@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 public @interface Module {
 
   String[] packages() default {};
+
+  Class<?>[] uses() default {};
 }
