@@ -66,7 +66,7 @@ class ProcessorDelegate {
 
     for (final Module module : modules) {
       final JavaFile moduleFile = moduleBuilder.createModule(module);
-      javaFileWriter.writeJavaFile(module.getName().toString().concat("Impl"), moduleFile);
+      javaFileWriter.writeJavaFile(getModuleFileName(module, "Impl"), moduleFile);
 
       if (isDefaultModule(module)) {
         final JavaFile defaultModuleFile =
@@ -76,7 +76,7 @@ class ProcessorDelegate {
       }
 
       final JavaFile moduleFactoryFile = factoryBuilder.createFactory(module);
-      javaFileWriter.writeJavaFile(getModuleFileName(module), moduleFactoryFile);
+      javaFileWriter.writeJavaFile(getModuleFileName(module, "Factory"), moduleFactoryFile);
     }
 
     final JavaFile swordfish = swordfishBuilder.createSwordfish(modules);
@@ -89,11 +89,11 @@ class ProcessorDelegate {
     return module.getName().equals(DefaultModuleBuilder.DEFAULT_MODULE_NAME);
   }
 
-  private String getModuleFileName(final Module module) {
+  private String getModuleFileName(final Module module, final String suffix) {
     final Name name = module.getName();
     return new StringJoiner(".")
         .add(Constants.GENERATED_PACKAGE)
-        .add(name.getSimpleName().concat("Factory"))
+        .add(name.getSimpleName().concat(suffix))
         .toString();
   }
 }
