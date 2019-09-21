@@ -8,11 +8,13 @@ import com.github.agmcc.swordfish.graph.GraphUtils;
 import com.github.agmcc.swordfish.util.SetUtils;
 import com.google.common.graph.Graph;
 import com.google.common.graph.MutableGraph;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import javax.annotation.processing.RoundEnvironment;
 
@@ -48,7 +50,7 @@ public class ModuleLoader {
     final Map<Name, Bean> globalNameBeanMap =
         globalBeans.stream().collect(Collectors.toMap(Bean::getName, b -> b));
 
-    final Set<Module> modules = new HashSet<>();
+    final Set<Module> modules = new TreeSet<>(Comparator.comparing(Module::getName));
 
     for (final ModuleElement moduleElement : moduleElementGraph.nodes()) {
       final Set<Bean> localBeans =

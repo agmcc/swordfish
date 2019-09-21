@@ -3,8 +3,10 @@ package com.github.agmcc.swordfish.processor;
 import com.github.agmcc.swordfish.bean.BeanLoader;
 import com.github.agmcc.swordfish.bean.BeanMapper;
 import com.github.agmcc.swordfish.bean.GraphBuilder;
+import com.github.agmcc.swordfish.factory.DefaultModuleBuilder;
 import com.github.agmcc.swordfish.factory.FactoryBuilder;
 import com.github.agmcc.swordfish.factory.ModuleBuilder;
+import com.github.agmcc.swordfish.factory.SwordfishBuilder;
 import com.github.agmcc.swordfish.graph.GraphUtils;
 import com.github.agmcc.swordfish.io.JavaFileWriter;
 import com.github.agmcc.swordfish.module.ModuleLoader;
@@ -25,6 +27,8 @@ final class ProcessorDelegateFactory {
         new ModuleLoader(new ModuleMapper(processingEnv.getTypeUtils()), graphUtils),
         new JavaFileWriter(processingEnv.getFiler()),
         new FactoryBuilder(),
-        new ModuleBuilder());
+        new ModuleBuilder(),
+        new SwordfishBuilder(),
+        new DefaultModuleBuilder());
   }
 }

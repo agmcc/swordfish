@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -44,6 +45,10 @@ public class GraphUtils {
 
       @Override
       public N next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+
         final N node = stack.pop();
         if (!discovered.contains(node)) {
           discovered.add(node);

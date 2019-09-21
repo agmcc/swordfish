@@ -41,9 +41,12 @@ public class MultiModuleTest {
             forResource("output/multi-module/multi/api/ControllerFactory.java"),
             forResource("output/multi-module/multi/api/ExceptionHandlerFactory.java"),
             forResource("output/multi-module/multi/api/LoggerFactory.java"),
-            forResource("output/multi-module/multi/api/SwordfishApiModule.java"),
             forResource("output/multi-module/multi/data/DatabaseFactory.java"),
             forResource("output/multi-module/multi/data/DataConnectionFactory.java"),
-            forResource("output/multi-module/multi/data/SwordfishDataModule.java"));
+            forResource("output/multi-module/multi/Swordfish.java"),
+            forResource("output/multi-module/multi/ApiModuleFactory.java"),
+            forResource("output/multi-module/multi/ApiModuleImpl.java"),
+            forResource("output/multi-module/multi/DataModuleFactory.java"),
+            forResource("output/multi-module/multi/DataModuleImpl.java"));
   }
 }

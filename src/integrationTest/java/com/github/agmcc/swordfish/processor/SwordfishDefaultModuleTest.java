@@ -46,6 +46,9 @@ public class SwordfishDefaultModuleTest {
             forResource("output/swordfish-module/PaperFactory.java"),
             forResource("output/swordfish-module/PaperSizeFactory.java"),
             forResource("output/swordfish-module/NozzleFactory.java"),
-            forResource("output/swordfish-module/SwordfishDefaultModule.java"));
+            forResource("output/swordfish-module/Swordfish.java"),
+            forResource("output/swordfish-module/DefaultModuleFactory.java"),
+            forResource("output/swordfish-module/DefaultModule.java"),
+            forResource("output/swordfish-module/DefaultModuleImpl.java"));
   }
 }

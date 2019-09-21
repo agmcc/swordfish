@@ -38,6 +38,8 @@ public class RocketModuleTest {
             forResource("output/rocket-module/rocket/RocketFactory.java"),
             forResource("output/rocket-module/rocket/FuelTankFactory.java"),
             forResource("output/rocket-module/rocket/propulsion/BoosterFactory.java"),
-            forResource("output/rocket-module/rocket/SwordfishRocketModule.java"));
+            forResource("output/rocket-module/rocket/Swordfish.java"),
+            forResource("output/rocket-module/rocket/RocketModuleFactory.java"),
+            forResource("output/rocket-module/rocket/RocketModuleImpl.java"));
   }
 }

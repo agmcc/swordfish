@@ -56,11 +56,11 @@ public class Piston {}
 A factory class is generated for each bean, which creates a fully constructed instance
 (including transitive dependencies).
 
-The bean is then accessible via the default module: `com.github.swordfish.SwordfishDefaultModule`.
+The bean is then accessible via the default module in `com.github.agmcc.swordfish.Swordfish`.
 
 ```java
 public static void main(String[] args) {
-  Engine engine = SwordfishDefaultModule.engine();
+  Engine engine = Swordfish.defaultModule().engine();
 }
 ```
 
@@ -121,10 +121,10 @@ public interface EngineModule {
 ```
 
 In the example above, all beans in the `swordfish` package are added to the `EngineModule` scope, but only
-`Engine` is exposed. This bean can then be retrieved using the generated module class: 
+`Engine` is exposed. This bean can then be retrieved using the generated method on  the `Swordfish` class: 
 
 ```java
-Engine engine = SwordfishEngineModule.engine();
+Engine engine = Swordfish.engineModule().engine();
 ```
 
 Beans that are added to custom modules are not available in other modules, including the 

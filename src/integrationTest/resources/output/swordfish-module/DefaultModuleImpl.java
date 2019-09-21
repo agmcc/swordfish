@@ -15,37 +15,40 @@ import swordfish.PaperSizeFactory;
 import swordfish.Printer;
 import swordfish.PrinterFactory;
 
-public final class SwordfishDefaultModule {
+class DefaultModuleImpl implements DefaultModule {
 
-  private SwordfishDefaultModule() {
-    // Static access
-  }
-
-  public static Ink ink() {
+  @Override
+  public Ink ink() {
     return InkFactory.getInstance();
   }
 
-  public static InkCartridge inkCartridge() {
+  @Override
+  public InkCartridge inkCartridge() {
     return InkCartridgeFactory.getInstance();
   }
 
-  public static Nozzle nozzle() {
+  @Override
+  public Nozzle nozzle() {
     return NozzleFactory.getInstance();
   }
 
-  public static Paper paper() {
+  @Override
+  public Paper paper() {
     return PaperFactory.getInstance();
   }
 
-  public static PaperConfig paperConfig() {
+  @Override
+  public PaperConfig paperConfig() {
     return PaperConfigFactory.getInstance();
   }
 
-  public static PaperSize paperSize() {
+  @Override
+  public PaperSize paperSize() {
     return PaperSizeFactory.getInstance();
   }
 
-  public static Printer printer() {
+  @Override
+  public Printer printer() {
     return PrinterFactory.getInstance();
   }
 }

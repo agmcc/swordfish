@@ -1,6 +1,8 @@
 package com.github.agmcc.swordfish.factory;
 
 import com.github.agmcc.swordfish.domain.Bean;
+import com.github.agmcc.swordfish.domain.Constants;
+import com.github.agmcc.swordfish.domain.Module;
 import com.github.agmcc.swordfish.domain.Name;
 import com.github.agmcc.swordfish.domain.Visibility;
 import com.github.agmcc.swordfish.inject.InjectorVisitor;
@@ -29,6 +31,32 @@ public class FactoryBuilder {
         buildFactory(className, instance, constructor, getInstance, visibility);
 
     return JavaFile.builder(packageName, factory).build();
+  }
+
+  public JavaFile createFactory(final Module module) {
+    final Name name = module.getName();
+    final String simpleName = name.getSimpleName();
+
+    final ClassName className = ClassName.get(name.getPackageName(), simpleName);
+
+    final ClassName moduleImplClassName =
+        ClassName.get(Constants.GENERATED_PACKAGE, simpleName.concat("Impl"));
+
+    final FieldSpec instance =
+        FieldSpec.builder(className, "instance")
+            .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+            .initializer("new $T()", moduleImplClassName)
+            .build();
+
+    final MethodSpec constructor = buildConstructor();
+
+    final Visibility visibility = Visibility.PACKAGE;
+
+    final MethodSpec getInstance = buildGetInstance(className, visibility);
+    final TypeSpec factory =
+        buildFactory(className, instance, constructor, getInstance, visibility);
+
+    return JavaFile.builder(Constants.GENERATED_PACKAGE, factory).build();
   }
 
   private FieldSpec buildInstance(final ClassName className, final Bean bean) {

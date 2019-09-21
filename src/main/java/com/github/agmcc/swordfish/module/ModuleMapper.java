@@ -3,6 +3,7 @@ package com.github.agmcc.swordfish.module;
 import com.github.agmcc.swordfish.annotation.Module;
 import com.github.agmcc.swordfish.domain.ModuleElement;
 import com.github.agmcc.swordfish.domain.Name;
+import com.github.agmcc.swordfish.util.StringUtils;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -75,7 +76,19 @@ public class ModuleMapper {
         .filter(e -> e.getKind() == ElementKind.METHOD)
         .filter(e -> e.getModifiers().contains(Modifier.PUBLIC))
         .map(ExecutableElement.class::cast)
-        .map(e -> Name.from(e.getReturnType().toString()))
+        .map(
+            e -> {
+              Name name = Name.from(e.getReturnType().toString());
+              String expectedMethod = StringUtils.toCamelCase(name.getSimpleName());
+              final String actualMethod = e.getSimpleName().toString();
+              if (!actualMethod.equals(expectedMethod)) {
+                throw new RuntimeException(
+                    String.format(
+                        "Invalid published method name '%s' (expected '%s') in %s",
+                        actualMethod, expectedMethod, e.getEnclosingElement().toString()));
+              }
+              return name;
+            })
         .collect(Collectors.toSet());
   }
 }

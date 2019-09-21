@@ -1,6 +1,7 @@
 package com.github.agmcc.swordfish.factory;
 
 import com.github.agmcc.swordfish.domain.Bean;
+import com.github.agmcc.swordfish.domain.Constants;
 import com.github.agmcc.swordfish.domain.Module;
 import com.github.agmcc.swordfish.domain.Name;
 import com.github.agmcc.swordfish.util.StringUtils;
@@ -18,25 +19,20 @@ public class ModuleBuilder {
   public JavaFile createModule(final Module module) {
 
     final Name name = module.getName();
-    final String packageName = name.getPackageName();
-    final String simpleName = "Swordfish" + name.getSimpleName();
-
-    final MethodSpec constructor =
-        MethodSpec.constructorBuilder()
-            .addModifiers(Modifier.PRIVATE)
-            .addComment("Static access")
-            .build();
 
     final List<MethodSpec> beanMethods = getBeanMethods(module.getPublished());
 
+    final ClassName moduleClassName = ClassName.get(name.getPackageName(), name.getSimpleName());
+
     final TypeSpec moduleSpec =
-        TypeSpec.classBuilder(simpleName)
-            .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-            .addMethod(constructor)
+        TypeSpec.classBuilder(name.getSimpleName().concat("Impl"))
+            .addSuperinterface(moduleClassName)
             .addMethods(beanMethods)
             .build();
 
-    return JavaFile.builder(packageName, moduleSpec).build();
+    return JavaFile.builder(Constants.GENERATED_PACKAGE, moduleSpec)
+        .skipJavaLangImports(true)
+        .build();
   }
 
   private List<MethodSpec> getBeanMethods(final Set<Bean> beans) {
@@ -45,11 +41,14 @@ public class ModuleBuilder {
 
   private MethodSpec getBeanMethod(final Bean bean) {
     final Name name = bean.getName();
+
     final ClassName beanClassName = ClassName.get(name.getPackageName(), name.getSimpleName());
     final ClassName beanFactoryClassName =
         ClassName.get(name.getPackageName(), name.getSimpleName().concat("Factory"));
+
     return MethodSpec.methodBuilder(StringUtils.toCamelCase(name.getSimpleName()))
-        .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+        .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(Override.class)
         .returns(beanClassName)
         .addStatement("return $T.getInstance()", beanFactoryClassName)
         .build();
