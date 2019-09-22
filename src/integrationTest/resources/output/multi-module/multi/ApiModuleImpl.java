@@ -2,7 +2,6 @@ package com.github.agmcc.swordfish;
 
 import multi.api.ApiModule;
 import multi.api.Controller;
-import multi.api.ControllerFactory;
 
 class ApiModuleImpl implements ApiModule {
 

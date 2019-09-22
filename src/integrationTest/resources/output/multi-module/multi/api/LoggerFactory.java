@@ -1,6 +1,8 @@
-package multi.api;
+package com.github.agmcc.swordfish;
 
-public final class LoggerFactory {
+import multi.api.Logger;
+
+final class LoggerFactory {
 
   private static final Logger instance = new Logger();
 
@@ -8,7 +10,7 @@ public final class LoggerFactory {
     // Static access
   }
 
-  public static Logger getInstance() {
+  static Logger getInstance() {
     return instance;
   }
 }

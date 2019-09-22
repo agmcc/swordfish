@@ -1,8 +1,8 @@
-package rocket;
+package com.github.agmcc.swordfish;
 
-import rocket.propulsion.BoosterFactory;
+import rocket.Rocket;
 
-public final class RocketFactory {
+final class RocketFactory {
 
   private static final Rocket instance =
       new Rocket(FuelTankFactory.getInstance(), BoosterFactory.getInstance());
@@ -11,7 +11,7 @@ public final class RocketFactory {
     // Static access
   }
 
-  public static Rocket getInstance() {
+  static Rocket getInstance() {
     return instance;
   }
 }

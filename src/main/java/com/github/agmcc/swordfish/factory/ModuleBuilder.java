@@ -44,7 +44,7 @@ public class ModuleBuilder {
 
     final ClassName beanClassName = ClassName.get(name.getPackageName(), name.getSimpleName());
     final ClassName beanFactoryClassName =
-        ClassName.get(name.getPackageName(), name.getSimpleName().concat("Factory"));
+        ClassName.get(Constants.GENERATED_PACKAGE, name.getSimpleName().concat("Factory"));
 
     return MethodSpec.methodBuilder(StringUtils.toCamelCase(name.getSimpleName()))
         .addModifiers(Modifier.PUBLIC)

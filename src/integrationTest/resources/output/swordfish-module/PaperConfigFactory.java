@@ -1,6 +1,8 @@
-package swordfish;
+package com.github.agmcc.swordfish;
 
-public final class PaperConfigFactory {
+import swordfish.PaperConfig;
+
+final class PaperConfigFactory {
 
   private static final PaperConfig instance = new PaperConfig();
 
@@ -8,7 +10,7 @@ public final class PaperConfigFactory {
     // Static access
   }
 
-  public static PaperConfig getInstance() {
+  static PaperConfig getInstance() {
     return instance;
   }
 }

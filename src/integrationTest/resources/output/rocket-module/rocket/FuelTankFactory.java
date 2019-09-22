@@ -1,6 +1,8 @@
-package rocket;
+package com.github.agmcc.swordfish;
 
-public final class FuelTankFactory {
+import rocket.FuelTank;
+
+final class FuelTankFactory {
 
   private static final FuelTank instance = new FuelTank();
 
@@ -8,7 +10,7 @@ public final class FuelTankFactory {
     // Static access
   }
 
-  public static FuelTank getInstance() {
+  static FuelTank getInstance() {
     return instance;
   }
 }

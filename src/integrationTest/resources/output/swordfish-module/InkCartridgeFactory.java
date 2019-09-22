@@ -1,6 +1,8 @@
-package swordfish;
+package com.github.agmcc.swordfish;
 
-public final class InkCartridgeFactory {
+import swordfish.InkCartridge;
+
+final class InkCartridgeFactory {
 
   private static final InkCartridge instance =
       new InkCartridge(InkFactory.getInstance(), NozzleFactory.getInstance());
@@ -9,7 +11,7 @@ public final class InkCartridgeFactory {
     // Static access
   }
 
-  public static InkCartridge getInstance() {
+  static InkCartridge getInstance() {
     return instance;
   }
 }

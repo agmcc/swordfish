@@ -8,7 +8,6 @@ import com.github.agmcc.swordfish.bean.BeanLoader;
 import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.domain.Module;
 import com.github.agmcc.swordfish.domain.Name;
-import com.github.agmcc.swordfish.domain.Visibility;
 import com.github.agmcc.swordfish.factory.DefaultModuleBuilder;
 import com.github.agmcc.swordfish.factory.FactoryBuilder;
 import com.github.agmcc.swordfish.factory.ModuleBuilder;
@@ -58,10 +57,7 @@ class ProcessorDelegateTest {
 
     // Given
     final Bean bean =
-        new Bean(
-            Name.from("swordfish.Ink"),
-            new ConstructorInjector(Collections.emptyList()),
-            Visibility.PUBLIC);
+        new Bean(Name.from("swordfish.Ink"), new ConstructorInjector(Collections.emptyList()));
 
     final Set<Bean> beans = Collections.singleton(bean);
 
@@ -112,7 +108,9 @@ class ProcessorDelegateTest {
     // Then
     assertTrue(result);
 
-    then(javaFileWriter).should().writeJavaFile("swordfish.InkFactory", factoryFile);
+    then(javaFileWriter)
+        .should()
+        .writeJavaFile("com.github.agmcc.swordfish.InkFactory", factoryFile);
     then(javaFileWriter)
         .should()
         .writeJavaFile("com.github.agmcc.swordfish.DefaultModuleImpl", moduleFile);

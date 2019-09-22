@@ -1,6 +1,8 @@
-package multi.api;
+package com.github.agmcc.swordfish;
 
-public final class ExceptionHandlerFactory {
+import multi.api.ExceptionHandler;
+
+final class ExceptionHandlerFactory {
 
   private static final ExceptionHandler instance =
       new ExceptionHandler(LoggerFactory.getInstance());
@@ -9,7 +11,7 @@ public final class ExceptionHandlerFactory {
     // Static access
   }
 
-  public static ExceptionHandler getInstance() {
+  static ExceptionHandler getInstance() {
     return instance;
   }
 }

@@ -1,7 +1,6 @@
 package com.github.agmcc.swordfish;
 
 import rocket.Rocket;
-import rocket.RocketFactory;
 import rocket.RocketModule;
 
 class RocketModuleImpl implements RocketModule {

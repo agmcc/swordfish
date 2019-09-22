@@ -1,6 +1,9 @@
-package swordfish;
+package com.github.agmcc.swordfish;
 
-public final class NozzleFactory {
+import swordfish.Nozzle;
+import swordfish.NozzleConfig;
+
+final class NozzleFactory {
 
   private static final Nozzle instance = NozzleConfig.nozzle();
 
@@ -8,7 +11,7 @@ public final class NozzleFactory {
     // Static access
   }
 
-  public static Nozzle getInstance() {
+  static Nozzle getInstance() {
     return instance;
   }
 }

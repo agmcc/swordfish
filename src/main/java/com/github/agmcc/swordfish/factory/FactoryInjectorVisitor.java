@@ -1,5 +1,6 @@
 package com.github.agmcc.swordfish.factory;
 
+import com.github.agmcc.swordfish.domain.Constants;
 import com.github.agmcc.swordfish.domain.Name;
 import com.github.agmcc.swordfish.inject.BeanMethodInjector;
 import com.github.agmcc.swordfish.inject.ConstructorInjector;
@@ -45,7 +46,7 @@ public class FactoryInjectorVisitor implements InjectorVisitor {
 
     final Name beanName = injector.getMethodClassName();
     final ClassName beanClassName =
-        ClassName.get(beanName.getPackageName(), beanName.getSimpleName().concat("Factory"));
+        ClassName.get(Constants.GENERATED_PACKAGE, beanName.getSimpleName().concat("Factory"));
 
     final StringJoiner methodJoiner = new StringJoiner(", ", "$T.getInstance().$L(", ")");
     dependencyClassNames.forEach(d -> methodJoiner.add("$T.getInstance()"));
@@ -81,7 +82,7 @@ public class FactoryInjectorVisitor implements InjectorVisitor {
 
   private List<ClassName> getDependencyClassNames(final List<Name> dependencies) {
     return dependencies.stream()
-        .map(d -> ClassName.get(d.getPackageName(), d.getSimpleName().concat("Factory")))
+        .map(d -> ClassName.get(Constants.GENERATED_PACKAGE, d.getSimpleName().concat("Factory")))
         .collect(Collectors.toList());
   }
 }

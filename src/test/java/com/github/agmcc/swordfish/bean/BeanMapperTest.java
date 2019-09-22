@@ -29,13 +29,10 @@ import java.util.List;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullSource;
 
 class BeanMapperTest {
 
@@ -115,25 +112,23 @@ class BeanMapperTest {
 
       assertThatExceptionOfType(RuntimeException.class)
           .isThrownBy(() -> beanMapper.mapBean(classElement))
-          .withMessage("Named elements cannot be private");
+          .withMessage("Named classes must be public");
     }
 
-    @ParameterizedTest
-    @EnumSource(value = Modifier.class, names = "PUBLIC")
-    @NullSource
-    void mapBean_defaultConstructor_mapped(final Modifier modifier) {
+    @Test
+    void mapBean_defaultConstructor_mapped() {
       // Given
       final Element classElement =
           TypeElementFake.builder()
               .qualifiedName(QUALIFIED_NAME)
               .kind(CLASS)
-              .modifier(modifier)
+              .modifier(PUBLIC)
               .enclosingElements(
                   Collections.singletonList(
                       ExecutableElementFake.builder()
                           .parameters(Collections.emptyList())
                           .kind(CONSTRUCTOR)
-                          .modifier(modifier)
+                          .modifier(PUBLIC)
                           .build()))
               .build();
 
@@ -196,10 +191,8 @@ class BeanMapperTest {
           .withMessage("Multiple @Inject constructors present for bean: swordfish.Printer");
     }
 
-    @ParameterizedTest
-    @EnumSource(value = Modifier.class, names = "PUBLIC")
-    @NullSource
-    void mapBean_singleInjectConstructor_mapped(final Modifier modifier) {
+    @Test
+    void mapBean_singleInjectConstructor_mapped() {
       // Given
       final String dependencyQualifiedName = "swordfish.InkCartridge";
 
@@ -207,7 +200,7 @@ class BeanMapperTest {
           TypeElementFake.builder()
               .qualifiedName(QUALIFIED_NAME)
               .kind(CLASS)
-              .modifier(modifier)
+              .modifier(PUBLIC)
               .enclosingElements(
                   Collections.singletonList(
                       ExecutableElementFake.builder()
@@ -221,7 +214,7 @@ class BeanMapperTest {
                                       .build()))
                           .annotationClass(Inject.class)
                           .kind(CONSTRUCTOR)
-                          .modifier(modifier)
+                          .modifier(PUBLIC)
                           .build()))
               .build();
 

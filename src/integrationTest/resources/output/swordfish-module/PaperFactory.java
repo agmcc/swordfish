@@ -1,6 +1,8 @@
-package swordfish;
+package com.github.agmcc.swordfish;
 
-public final class PaperFactory {
+import swordfish.Paper;
+
+final class PaperFactory {
 
   private static final Paper instance =
       PaperConfigFactory.getInstance().paper(PaperSizeFactory.getInstance());
@@ -9,7 +11,7 @@ public final class PaperFactory {
     // Static access
   }
 
-  public static Paper getInstance() {
+  static Paper getInstance() {
     return instance;
   }
 }

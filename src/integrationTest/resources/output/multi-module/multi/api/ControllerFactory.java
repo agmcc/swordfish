@@ -1,8 +1,8 @@
-package multi.api;
+package com.github.agmcc.swordfish;
 
-import multi.data.DatabaseFactory;
+import multi.api.Controller;
 
-public final class ControllerFactory {
+final class ControllerFactory {
 
   private static final Controller instance =
       new Controller(ExceptionHandlerFactory.getInstance(), DatabaseFactory.getInstance());
@@ -11,7 +11,7 @@ public final class ControllerFactory {
     // Static access
   }
 
-  public static Controller getInstance() {
+  static Controller getInstance() {
     return instance;
   }
 }

@@ -2,7 +2,6 @@ package com.github.agmcc.swordfish.bean;
 
 import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.domain.Name;
-import com.github.agmcc.swordfish.domain.Visibility;
 import com.github.agmcc.swordfish.inject.BeanMethodInjector;
 import com.github.agmcc.swordfish.inject.ConstructorInjector;
 import com.github.agmcc.swordfish.inject.Injector;
@@ -39,14 +38,15 @@ public class BeanMapper {
       throw new RuntimeException("Named classes cannot be abstract");
     }
 
+    if (!classModifiers.contains(Modifier.PUBLIC)) {
+      throw new RuntimeException("Named classes must be public");
+    }
+
     final ExecutableElement constructorElement = getBeanConstructor(classElement);
     final List<Name> constructorArgs = getArgumentTypes(constructorElement);
 
     // TODO: Hardcoded to constructor injection
-    return new Bean(
-        Name.from(classElement.toString()),
-        new ConstructorInjector(constructorArgs),
-        mapVisibility(classModifiers));
+    return new Bean(Name.from(classElement.toString()), new ConstructorInjector(constructorArgs));
   }
 
   private Bean mapMethodElement(final ExecutableElement methodElement) {
@@ -54,6 +54,10 @@ public class BeanMapper {
 
     if (methodModifiers.contains(Modifier.ABSTRACT)) {
       throw new RuntimeException("Named methods cannot be abstract");
+    }
+
+    if (!methodModifiers.contains(Modifier.PUBLIC)) {
+      throw new RuntimeException("Named methods must be public");
     }
 
     final Element enclosingElement = methodElement.getEnclosingElement();
@@ -86,10 +90,7 @@ public class BeanMapper {
       methodInjector = new BeanMethodInjector(methodClassName, methodName, methodArgs);
     }
 
-    return new Bean(
-        Name.from(methodElement.getReturnType().toString()),
-        methodInjector,
-        mapVisibility(methodModifiers));
+    return new Bean(Name.from(methodElement.getReturnType().toString()), methodInjector);
   }
 
   private List<Name> getArgumentTypes(final ExecutableElement executableElement) {
@@ -136,16 +137,6 @@ public class BeanMapper {
       throw new RuntimeException("Multiple @Inject constructors present for bean: " + classElement);
     } else {
       return injectConstructors.get(0);
-    }
-  }
-
-  private Visibility mapVisibility(final Set<Modifier> modifiers) {
-    if (modifiers.contains(Modifier.PUBLIC)) {
-      return Visibility.PUBLIC;
-    } else if (!modifiers.contains(Modifier.PRIVATE)) {
-      return Visibility.PACKAGE;
-    } else {
-      throw new RuntimeException("Named elements cannot be private");
     }
   }
 }

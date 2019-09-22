@@ -1,6 +1,8 @@
-package multi.data;
+package com.github.agmcc.swordfish;
 
-public final class DataConnectionFactory {
+import multi.data.DataConnection;
+
+final class DataConnectionFactory {
 
   private static final DataConnection instance = new DataConnection();
 
@@ -8,7 +10,7 @@ public final class DataConnectionFactory {
     // Static access
   }
 
-  public static DataConnection getInstance() {
+  static DataConnection getInstance() {
     return instance;
   }
 }

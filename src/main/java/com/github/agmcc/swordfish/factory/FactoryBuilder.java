@@ -4,7 +4,6 @@ import com.github.agmcc.swordfish.domain.Bean;
 import com.github.agmcc.swordfish.domain.Constants;
 import com.github.agmcc.swordfish.domain.Module;
 import com.github.agmcc.swordfish.domain.Name;
-import com.github.agmcc.swordfish.domain.Visibility;
 import com.github.agmcc.swordfish.inject.InjectorVisitor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -20,17 +19,16 @@ public class FactoryBuilder {
     final String simpleName = name.getSimpleName();
     final String packageName = name.getPackageName();
 
-    final ClassName className = ClassName.get(packageName, simpleName);
-    final FieldSpec instance = buildInstance(className, bean);
+    final ClassName beanClassName = ClassName.get(packageName, simpleName);
+    final ClassName factoryClassName = ClassName.get(Constants.GENERATED_PACKAGE, simpleName);
+
+    final FieldSpec instance = buildInstance(beanClassName, bean);
     final MethodSpec constructor = buildConstructor();
 
-    final Visibility visibility = bean.getVisibility();
+    final MethodSpec getInstance = buildGetInstance(beanClassName);
+    final TypeSpec factory = buildFactory(factoryClassName, instance, constructor, getInstance);
 
-    final MethodSpec getInstance = buildGetInstance(className, visibility);
-    final TypeSpec factory =
-        buildFactory(className, instance, constructor, getInstance, visibility);
-
-    return JavaFile.builder(packageName, factory).build();
+    return JavaFile.builder(factoryClassName.packageName(), factory).build();
   }
 
   public JavaFile createFactory(final Module module) {
@@ -50,11 +48,8 @@ public class FactoryBuilder {
 
     final MethodSpec constructor = buildConstructor();
 
-    final Visibility visibility = Visibility.PACKAGE;
-
-    final MethodSpec getInstance = buildGetInstance(className, visibility);
-    final TypeSpec factory =
-        buildFactory(className, instance, constructor, getInstance, visibility);
+    final MethodSpec getInstance = buildGetInstance(className);
+    final TypeSpec factory = buildFactory(className, instance, constructor, getInstance);
 
     return JavaFile.builder(Constants.GENERATED_PACKAGE, factory).build();
   }
@@ -77,16 +72,12 @@ public class FactoryBuilder {
         .build();
   }
 
-  private MethodSpec buildGetInstance(final ClassName className, final Visibility visibility) {
+  private MethodSpec buildGetInstance(final ClassName className) {
     final MethodSpec.Builder getInstanceBuilder =
         MethodSpec.methodBuilder("getInstance")
             .addModifiers(Modifier.STATIC)
             .returns(className)
             .addStatement("return instance");
-
-    if (visibility == Visibility.PUBLIC) {
-      getInstanceBuilder.addModifiers(Modifier.PUBLIC);
-    }
 
     return getInstanceBuilder.build();
   }
@@ -95,8 +86,7 @@ public class FactoryBuilder {
       final ClassName className,
       final FieldSpec instance,
       final MethodSpec constructor,
-      final MethodSpec getInstance,
-      final Visibility visibility) {
+      final MethodSpec getInstance) {
 
     final TypeSpec.Builder factoryBuilder =
         TypeSpec.classBuilder(className.simpleName().concat("Factory"))
@@ -104,11 +94,6 @@ public class FactoryBuilder {
             .addField(instance)
             .addMethod(constructor)
             .addMethod(getInstance);
-
-    if (visibility == Visibility.PUBLIC) {
-      factoryBuilder.addModifiers(Modifier.PUBLIC);
-    }
-
     return factoryBuilder.build();
   }
 }

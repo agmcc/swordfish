@@ -2,18 +2,11 @@ package com.github.agmcc.swordfish;
 
 import swordfish.Ink;
 import swordfish.InkCartridge;
-import swordfish.InkCartridgeFactory;
-import swordfish.InkFactory;
 import swordfish.Nozzle;
-import swordfish.NozzleFactory;
 import swordfish.Paper;
 import swordfish.PaperConfig;
-import swordfish.PaperConfigFactory;
-import swordfish.PaperFactory;
 import swordfish.PaperSize;
-import swordfish.PaperSizeFactory;
 import swordfish.Printer;
-import swordfish.PrinterFactory;
 
 class DefaultModuleImpl implements DefaultModule {
 

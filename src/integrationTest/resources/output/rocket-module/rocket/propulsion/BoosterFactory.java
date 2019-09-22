@@ -1,6 +1,8 @@
-package rocket.propulsion;
+package com.github.agmcc.swordfish;
 
-public final class BoosterFactory {
+import rocket.propulsion.Booster;
+
+final class BoosterFactory {
 
   private static final Booster instance = new Booster();
 
@@ -8,7 +10,7 @@ public final class BoosterFactory {
     // Static access
   }
 
-  public static Booster getInstance() {
+  static Booster getInstance() {
     return instance;
   }
 }

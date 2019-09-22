@@ -1,6 +1,8 @@
-package multi.data;
+package com.github.agmcc.swordfish;
 
-public final class DatabaseFactory {
+import multi.data.Database;
+
+final class DatabaseFactory {
 
   private static final Database instance = new Database(DataConnectionFactory.getInstance());
 
@@ -8,7 +10,7 @@ public final class DatabaseFactory {
     // Static access
   }
 
-  public static Database getInstance() {
+  static Database getInstance() {
     return instance;
   }
 }

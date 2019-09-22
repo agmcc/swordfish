@@ -1,6 +1,8 @@
-package swordfish;
+package com.github.agmcc.swordfish;
 
-public final class PrinterFactory {
+import swordfish.Printer;
+
+final class PrinterFactory {
 
   private static final Printer instance =
       new Printer(InkCartridgeFactory.getInstance(), PaperFactory.getInstance());
@@ -9,7 +11,7 @@ public final class PrinterFactory {
     // Static access
   }
 
-  public static Printer getInstance() {
+  static Printer getInstance() {
     return instance;
   }
 }
