@@ -10,22 +10,34 @@ A compile-time dependency injection framework for Java, using JSR-330 annotation
 
 ## Installation
 
-Currently the project must be built from source (see *Building*).
-
 ### Example with Gradle (5.x)
 
-Add the following to your *build.gradle* file:
+The project can be built using Gradle *source dependencies* 
+(see: https://blog.gradle.org/introducing-source-dependencies).
+
+Add the following to *settings.gradle*:
 
 ```groovy
-repositories {
-    mavenLocal()
+sourceControl {
+    gitRepository("https://github.com/agmcc/swordfish.git") {
+        producesModule("com.github.agmcc:swordfish")
+    }
 }
+```
 
+Gradle will check out the source from Github and compile it.  You can then add the following to 
+your *build.gradle* file:
+
+```groovy
 dependencies {
     implementation 'com.github.agmcc:swordfish:0.4.0'
     annotationProcessor 'com.github.agmcc:swordfish:0.4.0'
 }
 ```
+
+You can also specify a different version, in which case Gradle will try to build against that Git tag.
+
+Alternatively, you can build from source (see *Building*).
 
 ## Usage
 
@@ -155,14 +167,27 @@ are exposed, so these aren't leaked to the ApiModule.
 
 ## Building
 
-Clone the project and run the following in the root directory:
+Clone Swordfish and run the following in the root directory:
 
 ```bash
 ./gradlew publishToMavenLocal
 ```
 
-Or if you want to run the tests:
+Then add the following to your project:
+
+```groovy
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'com.github.agmcc:swordfish:0.4.0'
+    annotationProcessor 'com.github.agmcc:swordfish:0.4.0'
+}
+```
+
+Or if you just want to compile and run the tests:
 
 ```bash
-./gradlew test
+./gradlew build
 ```
